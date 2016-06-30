@@ -5,7 +5,7 @@ import (
 	"math/big"
 
 	"github.com/dmmcquay/likexian/host-stat-go"
-	"github.com/dmmcquay/sqrl/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 )
 
 func meminfo() (uint64, uint64) {
