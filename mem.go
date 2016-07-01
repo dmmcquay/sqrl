@@ -3,6 +3,7 @@ package sqrl
 import (
 	"fmt"
 	"math/big"
+	"os"
 
 	"github.com/dustin/go-humanize"
 	"github.com/likexian/host-stat-go"
@@ -10,7 +11,7 @@ import (
 )
 
 type Ram struct {
-	total, free, swapSpace uint64
+	total, free, swapSpace string
 }
 
 type OS struct {
@@ -18,18 +19,21 @@ type OS struct {
 }
 
 func ramOSInfo() (Ram, OS) {
-	v, _ := mem.VirtualMemory()
-	s, _ := mem.SwapMemory()
-	i, _ := host_stat.GetHostInfo()
-	o := OS{i.HostName, i.OSType, i.OSRelease}
-	r := Ram{v.Total, v.Free, s.Free}
-	return r, o
-}
-func printInfo() {
-	mem, os := ramOSInfo()
-	total := mem.total
-	free := mem.free
-	swap := mem.swapSpace
+	v, e := mem.VirtualMemory()
+	if e != nil {
+		fmt.Println(e)
+	}
+	s, err := mem.SwapMemory()
+	if err != nil {
+		fmt.Println(err)
+	}
+	i, er := host_stat.GetHostInfo()
+	if er != nil {
+		fmt.Println(er)
+	}
+	total := v.Total
+	free := v.Free
+	swap := s.Free
 	totalint := int64(total)
 	totalbig := big.NewInt(totalint)
 	totalmb := humanize.BigBytes(totalbig)
@@ -39,20 +43,19 @@ func printInfo() {
 	swapint := int64(swap)
 	swapbig := big.NewInt(swapint)
 	swapmb := humanize.BigBytes(swapbig)
-	hostname := os.hostname
-	kernel := os.kernel
-	version := os.version
-	fmt.Println()
-	fmt.Println("RAM Info")
-	fmt.Println("Total RAM: ", totalmb)
-	fmt.Println("Free RAM: ", freemb)
-	fmt.Println()
-	fmt.Println("SwapSpace Info")
-	fmt.Println("SwapSpace: ", swapmb)
-	fmt.Println()
-	fmt.Println("Version info")
-	fmt.Println("OS Version: ", version)
-	fmt.Println("Hostname: ", hostname)
-	fmt.Println("Kernel Version: ", kernel)
-	fmt.Println()
+	hostname, e := os.Hostname()
+	if e != nil {
+		fmt.Println(e)
+	}
+	kernel := i.OSType
+	version := i.OSRelease
+	r := Ram{totalmb, freemb, swapmb}
+	o := OS{hostname, version, kernel}
+	return r, o
+}
+
+func printInfo() {
+	r, o := ramOSInfo()
+	fmt.Println(r)
+	fmt.Println(o)
 }
