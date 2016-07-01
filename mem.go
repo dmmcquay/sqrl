@@ -54,4 +54,5 @@ func printInfo() {
 	fmt.Println("OS Version: ", version)
 	fmt.Println("Hostname: ", hostname)
 	fmt.Println("Kernel Version: ", kernel)
+	fmt.Println()
 }
