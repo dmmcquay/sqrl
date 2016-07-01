@@ -4,59 +4,54 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/dmmcquay/likexian/host-stat-go"
 	"github.com/dustin/go-humanize"
+	"github.com/likexian/host-stat-go"
+	"github.com/shirou/gopsutil/mem"
 )
 
-func meminfo() (uint64, uint64) {
+type Ram struct {
+	total, free, swapSpace uint64
+}
+
+type OS struct {
+	hostname, kernel, version string
+}
+
+func ramOSInfo() (Ram, OS) {
 	v, _ := mem.VirtualMemory()
-	var total uint64
-	total = v.Total
-	free := v.Free
-	return total, free
-}
-
-func swapinfo() (uint64, uint64) {
 	s, _ := mem.SwapMemory()
-	total := s.Total
-	free := s.Free
-	return total, free
-}
-
-func versioninfo() (string, string, string) {
 	i, _ := host_stat.GetHostInfo()
-	osVersion := i.OSType
-	hostname := i.HostName
-	version := i.OSRelease
-	return osVersion, hostname, version
+	o := OS{i.HostName, i.OSType, i.OSRelease}
+	r := Ram{v.Total, v.Free, s.Free}
+	return r, o
 }
-func mem() {
-	total, free := meminfo()
+func printInfo() {
+	mem, os := ramOSInfo()
+	total := mem.total
+	free := mem.free
+	swap := mem.swapSpace
 	totalint := int64(total)
 	totalbig := big.NewInt(totalint)
-	swaptot, swapfree := swapinfo()
 	totalmb := humanize.BigBytes(totalbig)
 	freeint := int64(free)
 	freebig := big.NewInt(freeint)
 	freemb := humanize.BigBytes(freebig)
-	swaptotint := int64(swaptot)
-	swaptotbig := big.NewInt(swaptotint)
-	swaptotmb := humanize.BigBytes(swaptotbig)
-	swapfreeint := int64(swapfree)
-	swapfreebig := big.NewInt(swapfreeint)
-	swapfreemb := humanize.BigBytes(swapfreebig)
-	osVers, host, kern := versioninfo()
+	swapint := int64(swap)
+	swapbig := big.NewInt(swapint)
+	swapmb := humanize.BigBytes(swapbig)
+	hostname := os.hostname
+	kernel := os.kernel
+	version := os.version
 	fmt.Println()
 	fmt.Println("RAM Info")
 	fmt.Println("Total RAM: ", totalmb)
 	fmt.Println("Free RAM: ", freemb)
 	fmt.Println()
-	fmt.Println("SwapMemory Info")
-	fmt.Println("Total SwapMemory: ", swaptotmb)
-	fmt.Println("Free SwapMemory: ", swapfreemb)
+	fmt.Println("SwapSpace Info")
+	fmt.Println("SwapSpace: ", swapmb)
 	fmt.Println()
 	fmt.Println("Version info")
-	fmt.Println("OS Version: ", osVers)
-	fmt.Println("Hostname: ", host)
-	fmt.Println("Kernel Version: ", kern)
+	fmt.Println("OS Version: ", version)
+	fmt.Println("Hostname: ", hostname)
+	fmt.Println("Kernel Version: ", kernel)
 }
