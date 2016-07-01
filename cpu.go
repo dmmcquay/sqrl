@@ -1,18 +1,19 @@
-package sqrl
+package main
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
+	"runtime"
 )
 
-func CPUInfo() error {
+func main() {
 	info, err := cpu.Info()
-	if err != nil {
-		log.Printf("error getting cpu: %v", err)
-		return err
-	}
-	fmt.Println(info)
-	return nil
+	serial, erro := disk.IOCounters()
+	fmt.Println("The serial number is:", serial["serialNumber"])
+	fmt.Println("The model/speed of CPU is:", info[0].ModelName)
+	fmt.Println("The number of cores per CPU is:", info[0].Cores)
+	fmt.Println("The total number of CPUs is:", runtime.NumCPU())
+	fmt.Println(err)
+	fmt.Println(erro)
 }
