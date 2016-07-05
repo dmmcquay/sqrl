@@ -2,26 +2,26 @@ package sqrl
 
 import (
 	"fmt"
-	"log"
-	"os/exec"
-	"strings"
 
 	"github.com/shirou/gopsutil/net"
 )
 
-func netInfo() {
+type Interfaces struct {
+	Name  string
+	Addrs []net.InterfaceAddr
+	Flags []string
+}
+
+func NetworkInfo() {
 	a, _ := net.Interfaces()
 
 	fmt.Println()
 	fmt.Println("\t\t\tNetwork Info")
 
-	netSpeed, err := exec.Command("ethtool", "eno16777984").Output()
-	if err != nil {
-		log.Fatal(err)
+	for i := 0; i < 5; i++ {
+		info := Interfaces{a[i].Name, a[i].Addrs, a[i].Flags}
+		fmt.Println(info)
 	}
-	output1 := string(netSpeed)
-	result := strings.Split(output1, "\n")
-
-	fmt.Println(a[1].Name, a[1].Addrs, a[1].Flags, result[9])
+	fmt.Println()
 
 }
