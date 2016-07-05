@@ -1,19 +1,38 @@
-package main
+package sqrl
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/shirou/gopsutil/disk"
+	"log"
 	"runtime"
+	"strings"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
-func main() {
+type CPUInfo struct {
+	CPU   int    `json:"cpu"`
+	Cores int32  `json:"cores"`
+	Speed string `json:"speed"`
+	Model string `json:"model"`
+}
+
+func GetCPUInfo() {
 	info, err := cpu.Info()
-	serial, erro := disk.IOCounters()
-	fmt.Println("The serial number is:", serial["serialNumber"])
-	fmt.Println("The model/speed of CPU is:", info[0].ModelName)
-	fmt.Println("The number of cores per CPU is:", info[0].Cores)
-	fmt.Println("The total number of CPUs is:", runtime.NumCPU())
-	fmt.Println(err)
-	fmt.Println(erro)
+	if err != nil {
+		log.Fatal(err)
+	}
+	mInfo := strings.Split(info[0].ModelName, "@") // mInfo contains speed and model
+	c := CPUInfo{
+		CPU:   runtime.NumCPU(),
+		Cores: info[0].Cores,
+		Speed: mInfo[1],
+		Model: mInfo[0],
+	}
+
+	j, err := json.Marshal(c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(j))
 }
