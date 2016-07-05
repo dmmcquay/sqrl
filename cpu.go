@@ -1,9 +1,6 @@
 package sqrl
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"runtime"
 	"strings"
 
@@ -17,22 +14,17 @@ type CPUInfo struct {
 	Model string `json:"model"`
 }
 
-func GetCPUInfo() {
+func GetCPUInfo() (CPUInfo, error) {
 	info, err := cpu.Info()
 	if err != nil {
-		log.Fatal(err)
+		return CPUInfo{}, err
 	}
 	mInfo := strings.Split(info[0].ModelName, "@") // mInfo contains speed and model
 	c := CPUInfo{
 		CPU:   runtime.NumCPU(),
 		Cores: info[0].Cores,
-		Speed: mInfo[1],
-		Model: mInfo[0],
+		Speed: strings.Trim(mInfo[1], " "), //here
+		Model: strings.Trim(mInfo[0], " "), //here
 	}
-
-	j, err := json.Marshal(c)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(string(j))
+	return c, nil
 }
