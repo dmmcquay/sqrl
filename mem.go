@@ -1,7 +1,6 @@
 package sqrl
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 
@@ -11,51 +10,55 @@ import (
 )
 
 type Ram struct {
-	total, free, swapSpace string
+	Total string `json:"total"`
+	Free  string `json:"free"`
+	Used  string `json:"used"`
 }
-
+type Swap struct {
+	Total string `json:"total"`
+	Free  string `json:"free"`
+	Used  string `json:"used"`
+}
 type OS struct {
-	hostname, kernel, version string
+	Hostname string `json:"hostname"`
+	Kernel   string `json:"kernel"`
+	Version  string `json:"version"`
 }
 
-func ramOSInfo() (Ram, OS) {
-	v, e := mem.VirtualMemory()
-	if e != nil {
-		fmt.Println(e)
-	}
-	s, err := mem.SwapMemory()
+func RamOSInfo() (Ram, OS, Swap, error) {
+	v, err := mem.VirtualMemory()
 	if err != nil {
-		fmt.Println(err)
+		return Ram{}, OS{}, Swap{}, err
 	}
-	i, er := host_stat.GetHostInfo()
-	if er != nil {
-		fmt.Println(er)
+	p, err := mem.SwapMemory()
+	if err != nil {
+		return Ram{}, OS{}, Swap{}, err
 	}
-	total := v.Total
-	free := v.Free
-	swap := s.Free
-	totalint := int64(total)
-	totalbig := big.NewInt(totalint)
-	totalmb := humanize.BigBytes(totalbig)
-	freeint := int64(free)
-	freebig := big.NewInt(freeint)
-	freemb := humanize.BigBytes(freebig)
-	swapint := int64(swap)
-	swapbig := big.NewInt(swapint)
-	swapmb := humanize.BigBytes(swapbig)
-	hostname, e := os.Hostname()
-	if e != nil {
-		fmt.Println(e)
+	i, err := host_stat.GetHostInfo()
+	if err != nil {
+		return Ram{}, OS{}, Swap{}, err
 	}
-	kernel := i.OSType
-	version := i.OSRelease
-	r := Ram{totalmb, freemb, swapmb}
-	o := OS{hostname, version, kernel}
-	return r, o
-}
 
-func printInfo() {
-	r, o := ramOSInfo()
-	fmt.Println(r)
-	fmt.Println(o)
+	r := Ram{
+		Total: humanize.BigBytes(big.NewInt(int64(v.Total))),
+		Free:  humanize.BigBytes(big.NewInt(int64(v.Free))),
+		Used:  humanize.BigBytes(big.NewInt(int64(v.Total))),
+	}
+
+	s := Swap{
+		Total: humanize.BigBytes(big.NewInt(int64(p.Total))),
+		Free:  humanize.BigBytes(big.NewInt(int64(p.Free))),
+		Used:  humanize.BigBytes(big.NewInt(int64(p.Used))),
+	}
+	hostname, err := os.Hostname()
+	if err != nil {
+		return Ram{}, OS{}, Swap{}, err
+	}
+	o := OS{
+		Hostname: hostname,
+		Kernel:   i.OSType,
+		Version:  i.OSRelease,
+	}
+
+	return r, o, s, err
 }
