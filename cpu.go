@@ -23,8 +23,8 @@ func GetCPUInfo() (CPUInfo, error) {
 	c := CPUInfo{
 		CPU:   runtime.NumCPU(),
 		Cores: info[0].Cores,
-		Speed: strings.Trim(mInfo[1], " "), //here
-		Model: strings.Trim(mInfo[0], " "), //here
+		Speed: strings.Trim(mInfo[1], " "),
+		Model: strings.Trim(mInfo[0], " "),
 	}
 	return c, nil
 }
