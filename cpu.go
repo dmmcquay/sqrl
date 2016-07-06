@@ -1,18 +1,30 @@
 package sqrl
 
 import (
-	"fmt"
-	"log"
+	"runtime"
+	"strings"
 
 	"github.com/shirou/gopsutil/cpu"
 )
 
-func CPUInfo() error {
+type CPUInfo struct {
+	CPU   int    `json:"cpu"`
+	Cores int32  `json:"cores"`
+	Speed string `json:"speed"`
+	Model string `json:"model"`
+}
+
+func GetCPUInfo() (CPUInfo, error) {
 	info, err := cpu.Info()
 	if err != nil {
-		log.Printf("error getting cpu: %v", err)
-		return err
+		return CPUInfo{}, err
 	}
-	fmt.Println(info)
-	return nil
+	mInfo := strings.Split(info[0].ModelName, "@") // mInfo contains speed and model
+	c := CPUInfo{
+		CPU:   runtime.NumCPU(),
+		Cores: info[0].Cores,
+		Speed: strings.Trim(mInfo[1], " "),
+		Model: strings.Trim(mInfo[0], " "),
+	}
+	return c, nil
 }
