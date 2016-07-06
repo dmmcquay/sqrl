@@ -9,11 +9,11 @@ import (
 )
 
 func main() {
-	c, err := sqrl.GetCPUInfo()
+	r, err := sqrl.MakeReport()
 	if err != nil {
 		log.Fatal(err)
 	}
-	j, err := json.Marshal(c)
+	j, err := json.Marshal(r)
 	if err != nil {
 		log.Fatal(err)
 	}
