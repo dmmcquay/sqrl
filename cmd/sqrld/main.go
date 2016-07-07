@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -9,15 +8,35 @@ import (
 )
 
 func main() {
-	r, err := sqrl.MakeReport()
-	if err != nil {
-		log.Fatal(err)
-	}
-	j, err := json.Marshal(r)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(string(j))
+	//c, err := sqrl.GetCPUInfo()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//c.LogWriter()
 
-	sqrl.LogWriter()
+	//r, o, s, err := sqrl.RamOSInfo()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//r.LogWriter()
+	//o.LogWriter()
+	//s.LogWriter()
+
+	i, err := sqrl.GetInterfaces()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(i)
+
+	//r, err := sqrl.MakeReport()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	////a, e := sqrl.GetInterfaces()
+	////if e != nil {
+	////	log.Fatal(e)
+	////}
+	////fmt.Println(a)
+	//r.LogWriter()
 }
