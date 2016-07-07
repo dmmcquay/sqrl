@@ -1,5 +1,10 @@
 package sqrl
 
+import (
+	"log"
+	"log/syslog"
+)
+
 type Report struct {
 	Ram     `json:"Ram"`
 	Swap    `json:"Swap"`
@@ -22,5 +27,15 @@ func MakeReport() (Report, error) {
 		return Report{}, err
 	}
 	report := Report{ram, swap, os, cpu, interfaces}
+
 	return report, err
+}
+
+func LogWriter() {
+	logwriter, e := syslog.New(syslog.LOG_NOTICE, "Report")
+	if e == nil {
+		log.SetOutput(logwriter)
+	}
+
+	log.Print(MakeReport())
 }
