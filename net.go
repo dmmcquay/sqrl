@@ -50,7 +50,6 @@ func GetInterfaces() ([]Interface, error) {
 			},
 		)
 	}
-	fmt.Println(interfaces)
 	return interfaces, nil
 }
 
