@@ -1,6 +1,9 @@
 package sqrl
 
 import (
+	"encoding/json"
+	"log"
+	"log/syslog"
 	"runtime"
 	"strings"
 
@@ -27,4 +30,21 @@ func GetCPUInfo() (CPUInfo, error) {
 		Model: strings.Trim(mInfo[0], " "),
 	}
 	return c, nil
+}
+
+func (c CPUInfo) String() string {
+	j, err := json.Marshal(c)
+	if err != nil {
+		return ""
+	}
+	return string(j)
+}
+
+func (c *CPUInfo) LogWriter() {
+	l, e := syslog.New(syslog.LOG_NOTICE, "sqrl-CPUInfo")
+	if e == nil {
+		log.SetOutput(l)
+	}
+
+	log.Print(c)
 }

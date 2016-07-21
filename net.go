@@ -1,8 +1,11 @@
 package sqrl
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"log/syslog"
 	"strings"
 
 	"github.com/shirou/gopsutil/net"
@@ -13,6 +16,10 @@ type Interface struct {
 	Addrs []net.InterfaceAddr `json:"addrs"` // IP Address, MAC Address and their respective ports
 	Flags []string            `json:"flags"` // Types of links (up, down, multicast, etc.)
 	Speed string              `json:"speed"`
+}
+
+type Interfaces struct {
+	in []Interface
 }
 
 func getInterfaceSpeed(name string) string {
@@ -44,4 +51,21 @@ func GetInterfaces() ([]Interface, error) {
 		)
 	}
 	return interfaces, nil
+}
+
+func (i Interface) String() string {
+	j, err := json.Marshal(i)
+	if err != nil {
+		return ""
+	}
+	return string(j)
+}
+
+func (i *Interfaces) LogWriter() {
+	l, e := syslog.New(syslog.LOG_NOTICE, "sqrl-InterfaceInfo")
+	if e == nil {
+		log.SetOutput(l)
+	}
+
+	log.Print(i)
 }
