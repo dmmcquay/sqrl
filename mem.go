@@ -45,7 +45,7 @@ func RamOSInfo() (Ram, OS, Swap, error) {
 	r := Ram{
 		Total: humanize.BigBytes(big.NewInt(int64(v.Total))),
 		Free:  humanize.BigBytes(big.NewInt(int64(v.Free))),
-		Used:  humanize.BigBytes(big.NewInt(int64(v.Total))),
+		Used:  humanize.BigBytes(big.NewInt(int64(v.Used))),
 	}
 
 	s := Swap{
