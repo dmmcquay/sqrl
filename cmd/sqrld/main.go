@@ -3,10 +3,22 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 
 	"github.com/dmmcquay/sqrl"
+	"github.com/robfig/cron"
 	"github.com/spf13/cobra"
 )
+
+func runCron() {
+	c := cron.New()
+	c.AddFunc("@every 15s", main)
+	go c.Start()
+	sig := make(chan os.Signal)
+	signal.Notify(sig, os.Interrupt, os.Kill)
+	<-sig
+}
 
 func main() {
 	var verbose bool
@@ -128,4 +140,5 @@ func main() {
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(cpu, ros, net, all)
 	rootCmd.Execute()
+	runCron()
 }
