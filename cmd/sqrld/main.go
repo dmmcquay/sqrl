@@ -141,4 +141,5 @@ func main() {
 	rootCmd.AddCommand(cpu, ros, net, all)
 	rootCmd.Execute()
 	runCron()
+	//help
 }
