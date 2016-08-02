@@ -59,6 +59,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			i.LogWriter()
 			if verbose {
 				fmt.Println(i)
 			}

@@ -22,6 +22,12 @@ type Interfaces struct {
 	in []Interface
 }
 
+func newInterfaces() Interfaces {
+	return Interfaces{
+		in: []Interface{},
+	}
+}
+
 func getInterfaceSpeed(name string) string {
 	path := fmt.Sprintf("/sys/class/net/%s/speed", name)
 	dat, err := ioutil.ReadFile(path)
@@ -32,16 +38,16 @@ func getInterfaceSpeed(name string) string {
 	return speed
 }
 
-func GetInterfaces() ([]Interface, error) {
+func GetInterfaces() (Interfaces, error) {
 	n, err := net.Interfaces()
 	if err != nil {
-		return []Interface{}, err
+		return Interfaces{}, err
 	}
 
-	interfaces := []Interface{}
+	interfaces := newInterfaces()
 	for _, i := range n {
-		interfaces = append(
-			interfaces,
+		interfaces.in = append(
+			interfaces.in,
 			Interface{
 				Name:  i.Name,
 				Addrs: i.Addrs,
@@ -50,15 +56,20 @@ func GetInterfaces() ([]Interface, error) {
 			},
 		)
 	}
+	//fmt.Printf("%+v\n", interfaces)
 	return interfaces, nil
 }
 
-func (i Interface) String() string {
-	j, err := json.Marshal(i)
-	if err != nil {
-		return ""
+func (i Interfaces) String() string {
+	final := ""
+	for _, e := range i.in {
+		j, err := json.Marshal(e)
+		if err != nil {
+			return ""
+		}
+		final += string(j)
 	}
-	return string(j)
+	return final
 }
 
 func (i *Interfaces) LogWriter() {
