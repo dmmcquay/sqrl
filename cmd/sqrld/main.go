@@ -97,6 +97,28 @@ func main() {
 		},
 	}
 
+	var las = &cobra.Command{
+		Use:   "las",
+		Short: "starts listen and serve functionality",
+		Long:  `will start a listen and serve function on localhost so the user can curl specific commands.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			host := "localhost"
+			port := 8888
+
+			sm := http.NewServeMux()
+
+			sqrl.AddRoutes(sm)
+			log.Printf("serving at: http://%s:%d/", host, port)
+
+			addr := fmt.Sprintf("%s:%d", host, port)
+			err := http.ListenAndServe(addr, sm)
+			if err != nil {
+				log.Printf("%+v", err)
+				os.Exit(1)
+			}
+		},
+	}
+
 	cpu.Flags().BoolVarP(
 		&verbose,
 		"verbose",
@@ -127,23 +149,15 @@ func main() {
 		false,
 		"print to stdout the information that would be logged",
 	)
+
+	las.Flags().BoolVarP(
+		&verbose,
+		"verbose",
+		"v",
+		false,
+		"print to stdout the information that would be logged",
+	)
 	var rootCmd = &cobra.Command{Use: "app"}
-	rootCmd.AddCommand(cpu, ros, net, all)
+	rootCmd.AddCommand(cpu, ros, net, all, las)
 	rootCmd.Execute()
-
-	host := "localhost"
-	port := 8888
-
-	sm := http.NewServeMux()
-
-	sqrl.AddRoutes(sm)
-
-	log.Printf("serving at: http://%s:%d/", host, port)
-
-	addr := fmt.Sprintf("%s:%d", host, port)
-	err := http.ListenAndServe(addr, sm)
-	if err != nil {
-		log.Printf("%+v", err)
-		os.Exit(1)
-	}
 }
