@@ -11,7 +11,7 @@ type Report struct {
 	Swap    `json:"Swap"`
 	OS      `json:"OS"`
 	CPUInfo `json:"CPUInfo"`
-	Inter   []Interface `json:"Interface"`
+	Inter   Interfaces `json:"Interfaces"`
 }
 
 func MakeReport() (Report, error) {
