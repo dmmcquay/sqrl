@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/dmmcquay/sqrl"
 	"github.com/spf13/cobra"
@@ -128,4 +130,20 @@ func main() {
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(cpu, ros, net, all)
 	rootCmd.Execute()
+
+	host := "localhost"
+	port := 8888
+
+	sm := http.NewServeMux()
+
+	sqrl.AddRoutes(sm)
+
+	log.Printf("serving at: http://%s:%d/", host, port)
+
+	addr := fmt.Sprintf("%s:%d", host, port)
+	err := http.ListenAndServe(addr, sm)
+	if err != nil {
+		log.Printf("%+v", err)
+		os.Exit(1)
+	}
 }
