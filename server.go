@@ -45,13 +45,15 @@ func swap(w http.ResponseWriter, req *http.Request) {
 
 }
 
-//func network(w http.ResponseWriter, req *http.Request) {
-//	i, err := GetInterfaces()
-//	if err != nil {
-//		log.Fatal(err)
-//	}
+func network(w http.ResponseWriter, req *http.Request) {
+	i, err := GetInterfaces()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//}
+	i.LogWriter()
+
+}
 
 func all(w http.ResponseWriter, req *http.Request) {
 	c, err := GetCPUInfo()
@@ -62,14 +64,15 @@ func all(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//i, err := GetInterfaces()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
+	i, err := GetInterfaces()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	c.LogWriter()
 	r.LogWriter()
 	o.LogWriter()
 	s.LogWriter()
+	i.LogWriter()
 
 }
