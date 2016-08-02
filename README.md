@@ -5,11 +5,11 @@ A system inventory program created by HPC academy students designed to gather ex
 
 This program monitors RAM, OS, CPU, HDD, swap, and network information across systems, logging the information periodically.
 
--Logs amount of free, total, and used RAM.
--Logs amount of free, total, and used Swap.
--Logs hostname, version, and kernel information.
--Logs CPU, number of cores, speed of CPU, and Model of CPU.
--Logs names, addresses, flags, and speeds of networks. 
+* Logs amount of free, total, and used RAM.
+* Logs amount of free, total, and used Swap.
+* Logs hostname, version, and kernel information.
+* Logs CPU, number of cores, speed of CPU, and Model of CPU.
+* Logs names, addresses, flags, and speeds of networks. 
 
 
 # Basic Contents
@@ -18,8 +18,8 @@ This program monitors RAM, OS, CPU, HDD, swap, and network information across sy
 
 # Getting Started
 If you have a working Go environment on your computer, you can pull down this repo using:
-	> go get github.com/dmmcquay/sqrl
 
+	> go get github.com/dmmcquay/sqrl
 
 # Usage
 
@@ -28,11 +28,11 @@ If you have a working Go environment on your computer, you can pull down this re
 Running 'sqrl [mode][optional flag]' will log various system information.
 
 The mode options are:
-**sqrl cpu**
-**sqrl hdd**
-**sqrl net**
-**sqrl ros**
-**sqrl all**
+* sqrl cpu
+* sqrl hdd
+* sqrl net
+* sqrl ros
+* sqrl all
 
 Here is an example:
 
@@ -48,12 +48,12 @@ sqrl ros -v
 ```
 
 #Authors:
- Delaney Gill-Sommerhauser
- Danielle Larson
- Christopher Moussa
+* Delaney Gill-Sommerhauser
+* Danielle Larson
+* Christopher Moussa
 
 # Acknowledgements
- Derek McQuay
- github.com/shirou/gopsutil
- github.com/dustin/go-humanize
- github.com/likexian/host-stat-go
+* Derek McQuay
+* github.com/shirou/gopsutil
+* github.com/dustin/go-humanize
+* github.com/likexian/host-stat-go
