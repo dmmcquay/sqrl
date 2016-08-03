@@ -44,7 +44,7 @@ This will log all system information. Using specifc modes will only log that par
 You can also output the logged information to the screen using the -v flag.
 
 ```
-sqrl ros -v
+sqrl all -v
 ```
 
 #Authors:
@@ -57,3 +57,4 @@ sqrl ros -v
 * github.com/shirou/gopsutil
 * github.com/dustin/go-humanize
 * github.com/likexian/host-stat-go
+* github.com/spf13/cobra
