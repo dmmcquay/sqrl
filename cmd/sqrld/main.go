@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func runCron() {
+func runCron(time string, increment string) {
 	c := cron.New()
-	c.AddFunc("@every 15s", main)
+	c.AddFunc("@every "+time+increment, main)
 	go c.Start()
 	sig := make(chan os.Signal)
 	signal.Notify(sig, os.Interrupt, os.Kill)
@@ -22,7 +22,6 @@ func runCron() {
 
 func main() {
 	var verbose bool
-
 	var cpu = &cobra.Command{
 		Use:   "cpu",
 		Short: "displays only cpu info",
@@ -140,6 +139,23 @@ func main() {
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(cpu, ros, net, all)
 	rootCmd.Execute()
-	runCron()
-	//help
+	if len(os.Args) == 5 {
+		args := os.Args[3:]
+		time := args[0]
+		increment := args[1]
+		runCron(time, increment)
+	}
+	if len(os.Args) == 4 {
+		args := os.Args[2:]
+		time := args[0]
+		increment := args[1]
+		runCron(time, increment)
+
+	}
+	if len(os.Args) < 4 {
+		fmt.Println("Not enough arguments.")
+	}
+	if len(os.Args) > 5 {
+		fmt.Println("Too many arguments.")
+	}
 }
